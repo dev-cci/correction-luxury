@@ -67,6 +67,12 @@ class Profile
     #[ORM\Column(type: 'datetime')]
     private $updatedAt;
 
+    #[ORM\ManyToOne(targetEntity: JobCategory::class, inversedBy: 'profiles')]
+    private $jobCategory;
+
+    #[ORM\OneToOne(mappedBy: 'profile', targetEntity: User::class, cascade: ['persist', 'remove'])]
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -284,6 +290,40 @@ class Profile
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getJobCategory(): ?JobCategory
+    {
+        return $this->jobCategory;
+    }
+
+    public function setJobCategory(?JobCategory $jobCategory): self
+    {
+        $this->jobCategory = $jobCategory;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($user === null && $this->user !== null) {
+            $this->user->setProfile(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($user !== null && $user->getProfile() !== $this) {
+            $user->setProfile($this);
+        }
+
+        $this->user = $user;
 
         return $this;
     }
