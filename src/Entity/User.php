@@ -26,6 +26,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
+    #[ORM\OneToOne(targetEntity: Profile::class, cascade: ['persist', 'remove'])]
+    private $profile;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -108,5 +111,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getProfile(): ?Profile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(?Profile $profile): self
+    {
+        $this->profile = $profile;
+
+        return $this;
     }
 }
